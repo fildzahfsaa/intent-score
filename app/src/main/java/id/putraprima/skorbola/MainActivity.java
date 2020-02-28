@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String HOMETEAM_KEY = "home";
     public static final String AWAYTEAM_KEY = "away";
-    public static final String HOMEIMAGE_KEY = "imageHome";
-    public static final String AWAYIMAGE_KEY = "imageAway";
+    public static final String HLOGO_KEY = "home_logo";
+    public static final String ALOGO_KEY = "away_logo";
 
     private static final String TAG = MainActivity.class.getCanonicalName();
     private static final int GALLERY_REQUEST_CODE_HOME = 1;
@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText awayTeam;
     private ImageView homeImage;
     private ImageView awayImage;
-    private Bitmap bitmap1;
-    private Bitmap bitmap2;
+    private Bitmap home_logo;
+    private Bitmap away_logo;
 
 
     @Override
@@ -63,18 +63,30 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Harap isi data!", Toast.LENGTH_SHORT).show();
         }
         else{
+            homeImage.setDrawingCacheEnabled(true);
+            home_logo = homeImage.getDrawingCache();
+            awayImage.setDrawingCacheEnabled(true);
+            away_logo = awayImage.getDrawingCache();
+
             Intent intent = new Intent(this, MatchActivity.class);
+
             intent.putExtra(HOMETEAM_KEY, home);
             intent.putExtra(AWAYTEAM_KEY, away);
-            homeImage.buildDrawingCache();
-            awayImage.buildDrawingCache();
-            Bitmap imageHome = homeImage.getDrawingCache();
-            Bitmap imageAway = awayImage.getDrawingCache();
-            Bundle extra = new Bundle();
-            extra.putParcelable(HOMEIMAGE_KEY, imageHome);
-
-            extra.putParcelable(AWAYIMAGE_KEY, imageAway);
+            intent.putExtra(HLOGO_KEY, home_logo);
+            intent.putExtra(ALOGO_KEY, away_logo);
             startActivity(intent);
+//            Intent intent = new Intent(this, MatchActivity.class);
+//            intent.putExtra(HOMETEAM_KEY, home);
+//            intent.putExtra(AWAYTEAM_KEY, away);
+//            homeImage.buildDrawingCache();
+//            awayImage.buildDrawingCache();
+//            Bitmap imageHome = homeImage.getDrawingCache();
+//            Bitmap imageAway = awayImage.getDrawingCache();
+//            Bundle extra = new Bundle();
+//            extra.putParcelable(HOMEIMAGE_KEY, imageHome);
+//
+//            extra.putParcelable(AWAYIMAGE_KEY, imageAway);
+//            startActivity(intent);
         }
     }
 
@@ -92,27 +104,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == 0){
+        if (resultCode == RESULT_CANCELED){
             return;
         }
-        if (requestCode == 1){
+        if (requestCode == GALLERY_REQUEST_CODE_HOME){
             if (data != null){
                 try{
                     Uri imageUri = data.getData();
-                    bitmap1 = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                    homeImage.setImageBitmap(bitmap1);
+                    Bitmap bmp = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    homeImage.setImageBitmap(bmp);
                 } catch (IOException e){
                     Toast.makeText(this, "Can't load image", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, e.getMessage());
                 }
             }
         }
-        if (requestCode == 2){
+        if (requestCode == GALLERY_REQUEST_CODE_AWAY){
             if (data != null){
                 try{
                     Uri imageUri = data.getData();
-                    bitmap2 = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                    awayImage.setImageBitmap(bitmap2);
+                    Bitmap bmp = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    awayImage.setImageBitmap(bmp);
                 } catch (IOException e){
                     Toast.makeText(this, "Can't load image", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, e.getMessage());

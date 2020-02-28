@@ -30,14 +30,15 @@ public class MatchActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null){
-            Bundle extra = getIntent().getExtras();
-            Bitmap bm = extra.getParcelable("imageHome");
-            Bitmap bm2 = extra.getParcelable("imageAway");
+            String home = extras.getString(MainActivity.HOMETEAM_KEY);
+            homeText.setText(home);
+            String away = extras.getString(MainActivity.AWAYTEAM_KEY);
+            awayText.setText(away);
 
-            homeText.setText(extras.getString("home"));
-            awayText.setText(extras.getString("away"));
+            Bitmap bm1 = (Bitmap) extras.get("home_logo");
+            homeImage.setImageBitmap(bm1);
 
-            homeImage.setImageBitmap(bm);
+            Bitmap bm2 = (Bitmap) extras.get("away_logo");
             awayImage.setImageBitmap(bm2);
         }
         //TODO
@@ -73,7 +74,7 @@ public class MatchActivity extends AppCompatActivity {
         }else if (scoreHome>scoreAway){
             result = homeText.getText().toString();
         }else if (scoreAway>scoreHome){
-            result = homeText.getText().toString();
+            result = awayText.getText().toString();
         }
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra(RESULT_KEY, result);
